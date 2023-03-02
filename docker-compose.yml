@@ -1,0 +1,94 @@
+version: '3.9'
+
+services:
+
+  data_base:
+    image: postgres:13
+    container_name: postgres_db
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - msnetwork
+    environment:
+      - POSTGRES_DB=ms-spring-banking
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+
+  #adminer:
+  #  image: adminer
+  #  container_name: adminer
+  #  restart: always
+  #  ports:
+  #    - "8090:8080"
+  #  networks:
+  #    - msnetwork
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "email@email.com"
+      PGADMIN_DEFAULT_PASSWORD: "12345"
+    ports:
+      - "15432:80"
+    depends_on:
+      - data_base
+    networks:
+      - msnetwork
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - msnetwork
+    environment:
+      RABBITMQ_USER: guest
+      RABBITMQ_PASS: guest
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    networks:
+      - msnetwork
+    volumes:
+      - ./prometheus:/etc/prometheus/
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - msnetwork
+    environment:
+      - GF_SECURITY_ADMIN_USER=guest
+      - GF_SECURITY_ADMIN_PASSWORD=guest
+    links:
+      - prometheus:prometheus
+
+  portainer:
+    image: portainer/portainer-ce:2.11.0
+    container_name: portainer-io
+    restart: always
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "9000:9000"
+    networks:
+      - msnetwork
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  msnetwork:
+    driver: bridge
