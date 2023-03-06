@@ -9,11 +9,15 @@ import core.kswelder.cliente.utils.EnderecoRequest;
 import core.kswelder.cliente.utils.PixRequest;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.QueryParam;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -37,6 +41,9 @@ public class ClienteController {
 
     @Autowired
     RabbitTemplate template;
+
+    @Value("${prof.name: Running}")
+    String profileTest;
 
     @PostMapping(path = "/cliente/save")
     public ResponseEntity<ClienteDTO> create(@RequestBody Cliente cliente) {
@@ -85,5 +92,17 @@ public class ClienteController {
     public ResponseEntity<String> delete(@PathVariable("id") String id){
         clienteService.delete(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Cliente DELETADO");
+    }
+
+    @GetMapping(path = "/test")
+    public ResponseEntity<ConnetionTest> test() throws UnknownHostException {
+        ConnetionTest test = ConnetionTest
+                .builder()
+                .address(InetAddress.getLocalHost())
+                .dateCreateAt(new Date().toString())
+                .activeProfile(profileTest)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(test);
     }
 }

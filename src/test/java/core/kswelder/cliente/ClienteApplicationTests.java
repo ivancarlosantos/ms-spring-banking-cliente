@@ -3,15 +3,38 @@ package core.kswelder.cliente;
 import core.kswelder.cliente.model.Cliente;
 import core.kswelder.cliente.model.Conta;
 import core.kswelder.cliente.status.ClienteStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Slf4j
+@Testcontainers
 @SpringBootTest
 public class ClienteApplicationTests {
+
+    @Container
+    private static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:11"));
+
+    @DynamicPropertySource
+    static void properties(DynamicPropertyRegistry registry){
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+        registry.add("spring.datasource.username", container::getUsername);
+        registry.add("spring.datasource.password", container::getPassword);
+
+        log.info("url {}", container.getJdbcUrl());
+        log.info("username {}", container.getUsername());
+        log.info("password {}", container.getPassword());
+    }
 
     @Test
     void testNomeCliente() {

@@ -3,7 +3,7 @@ version: '3.9'
 services:
 
   data_base:
-    image: postgres:13
+    image: postgres:11
     container_name: postgres_db
     restart: always
     ports:
