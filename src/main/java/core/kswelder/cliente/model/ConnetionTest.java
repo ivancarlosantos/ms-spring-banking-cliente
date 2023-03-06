@@ -14,6 +14,5 @@ import java.net.InetAddress;
 public class ConnetionTest {
 
     private InetAddress address;
-    private String activeProfile;
     private String dateCreateAt;
 }

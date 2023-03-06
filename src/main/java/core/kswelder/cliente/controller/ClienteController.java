@@ -42,9 +42,6 @@ public class ClienteController {
     @Autowired
     RabbitTemplate template;
 
-    @Value("${prof.name: Running}")
-    String profileTest;
-
     @PostMapping(path = "/cliente/save")
     public ResponseEntity<ClienteDTO> create(@RequestBody Cliente cliente) {
 
@@ -100,7 +97,6 @@ public class ClienteController {
                 .builder()
                 .address(InetAddress.getLocalHost())
                 .dateCreateAt(new Date().toString())
-                .activeProfile(profileTest)
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(test);
