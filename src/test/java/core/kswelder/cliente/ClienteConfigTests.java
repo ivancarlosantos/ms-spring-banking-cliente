@@ -45,12 +45,12 @@ public class ClienteConfigTests {
     }
 
     @BeforeAll
-    public void beforeAll(ExtensionContext extensionContext) {
+    void beforeAll(ExtensionContext extensionContext) {
         container.start();
     }
 
     @AfterAll
-    public void afterAll(ExtensionContext extensionContext) {
+    void afterAll(ExtensionContext extensionContext) {
         container.stop();
     }
 
