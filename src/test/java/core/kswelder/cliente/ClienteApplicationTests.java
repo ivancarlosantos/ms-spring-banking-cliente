@@ -23,7 +23,10 @@ import java.util.Date;
 public class ClienteApplicationTests {
 
     @Container
-    private static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:11"));
+    private static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:11"))
+            .withDatabaseName("data_base")
+            .withUsername("postgres")
+            .withPassword("12345");
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry){
