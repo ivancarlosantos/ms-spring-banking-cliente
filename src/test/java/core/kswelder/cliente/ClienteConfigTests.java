@@ -3,8 +3,11 @@ package core.kswelder.cliente;
 import core.kswelder.cliente.model.Cliente;
 import core.kswelder.cliente.model.Conta;
 import core.kswelder.cliente.status.ClienteStatus;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -25,10 +28,8 @@ import java.util.Date;
 public class ClienteConfigTests {
 
     @Container
-    static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:11"))
-            .withDatabaseName("data_base")
-            .withUsername("postgres")
-            .withPassword("12345");
+    static PostgreSQLContainer container = new PostgreSQLContainer(
+            DockerImageName.parse("postgres:11"));
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry){
@@ -43,10 +44,12 @@ public class ClienteConfigTests {
         log.info("spring.datasource.driver-class-name {}", container.getJdbcDriverInstance());
     }
 
+    @BeforeAll
     public void beforeAll(ExtensionContext extensionContext) {
         container.start();
     }
 
+    @AfterAll
     public void afterAll(ExtensionContext extensionContext) {
         container.stop();
     }
