@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -21,16 +22,17 @@ import java.util.Date;
 @Slf4j
 @Testcontainers
 @SpringBootTest
-public class ClienteApplicationTests {
+public class ClienteConfigTests {
 
     @Container
-    private static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:11"))
+    static PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:11"))
             .withDatabaseName("data_base")
             .withUsername("postgres")
             .withPassword("12345");
 
     @DynamicPropertySource
     static void properties(DynamicPropertyRegistry registry){
+        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
         registry.add("spring.datasource.url", container::getJdbcUrl);
         registry.add("spring.datasource.username", container::getUsername);
         registry.add("spring.datasource.password", container::getPassword);
@@ -38,6 +40,7 @@ public class ClienteApplicationTests {
         log.info("url {}", container.getJdbcUrl());
         log.info("username {}", container.getUsername());
         log.info("password {}", container.getPassword());
+        log.info("spring.datasource.driver-class-name {}", container.getJdbcDriverInstance());
     }
 
     public void beforeAll(ExtensionContext extensionContext) {
