@@ -6,6 +6,7 @@ import core.kswelder.cliente.status.ClienteStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -37,6 +38,14 @@ public class ClienteApplicationTests {
         log.info("url {}", container.getJdbcUrl());
         log.info("username {}", container.getUsername());
         log.info("password {}", container.getPassword());
+    }
+
+    public void beforeAll(ExtensionContext extensionContext) {
+        container.start();
+    }
+
+    public void afterAll(ExtensionContext extensionContext) {
+        container.stop();
     }
 
     @Test
